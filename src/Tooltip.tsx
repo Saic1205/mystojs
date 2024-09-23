@@ -6,7 +6,7 @@ interface TooltipProps {
   tooltipContent: React.ReactNode;
   backgroundColor: string;
   textColor: string;
-  useSpringEffect: boolean; // This is now a required prop
+  useSpringEffect: boolean;
 }
 
 const Tooltip: React.FC<TooltipProps> = ({

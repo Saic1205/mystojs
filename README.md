@@ -1,6 +1,6 @@
 # mystojs
 
-A Next.js friendly reusable tooltip component for React applications.
+A Next.js friendly reusable component library for React applications, featuring a Tooltip and a responsive Navbar.
 
 ## Installation
 
@@ -20,18 +20,23 @@ yarn add mystojs
 
 This package has the following peer dependencies:
 
-- react: ^18.3.1
-- framer-motion: ^11.5.6
+- react: ^18.0.0
+- framer-motion: ^11.0.0
+- @types/react: ^18.0.0 (for TypeScript users)
 
 Make sure these are installed in your project.
 
-## Usage
+## Components
 
-Here's a basic example of how to use the Tooltip component:
+### Tooltip
+
+A customizable tooltip component with smooth animations.
+
+#### Usage
 
 ```jsx
 import React from "react";
-import Tooltip from "mystojs";
+import { Tooltip } from "mystojs";
 
 const MyComponent = () => {
   return (
@@ -49,9 +54,7 @@ const MyComponent = () => {
 export default MyComponent;
 ```
 
-## Props
-
-The Tooltip component accepts the following props:
+#### Props
 
 - `children` (React.ReactNode): The element that triggers the tooltip on hover.
 - `tooltipContent` (React.ReactNode): The content to be displayed in the tooltip.
@@ -59,12 +62,89 @@ The Tooltip component accepts the following props:
 - `textColor` (string): The text color of the tooltip. Use Tailwind CSS classes.
 - `useSpringEffect` (boolean): Whether to use a spring animation effect for the tooltip movement.
 
+### Navbar
+
+A responsive navigation bar component with dropdown support and smooth animations.
+
+#### Usage of the component
+
+```jsx
+import React from "react";
+import { Navbar } from "mystojs";
+import import { usePathname } from "next/navigation"; // used in nextjs replace this react specific equivalent if using react
+
+const Mynav = () => {
+    const pathname = usePathname();
+  const navItems = [
+    { name: "Home", href: "/" },
+    { name: "About", href: "/about" },
+    {
+      name: "Services",
+      href: "/services",
+      subItems: [
+        { name: "Web Design", href: "/services/web-design" },
+        { name: "Mobile Apps", href: "/services/mobile-apps" },
+      ],
+    },
+    {
+      name: "Products",
+      href: "/products",
+      subItems: [
+        { name: "Software", href: "/products/software" },
+        { name: "Hardware", href: "/products/hardware" },
+      ],
+    },
+    { name: "Contact", href: "/contact" },
+  ];
+
+  const logo = <img src="/logo.png" alt="Logo" />;
+
+  const buttons = [
+    <button key="profile" className="btn">
+      Profile
+    </button>,
+    <button key="login" className="btn btn-primary">
+      Login
+    </button>,
+  ];
+
+  return (
+    <Navbar
+      logo={logo}
+      navItems={navItems}
+      buttons={buttons}
+      activeItemColor="text-blue-500"
+      hoverItemColor="hover:text-blue-300"
+      backgroundColor="bg-gray-100"
+      underlineColor="bg-blue-500"
+      hideOnScroll={false}
+      currentPath={pathname}
+    />
+  );
+};
+
+export default Mynav;
+```
+
+#### Props for nav
+
+- `logo` (React.ReactNode): The logo component to be displayed in the navbar.
+- `navItems` (NavItem[]): An array of navigation items.
+- `buttons` (React.ReactNode[]): Optional array of button components to be displayed in the navbar.
+- `activeItemColor` (string): The color of the active navigation item. Use Tailwind CSS classes.
+- `hoverItemColor` (string): The color of navigation items on hover. Use Tailwind CSS classes.
+- `backgroundColor` (string): The background color of the navbar. Use Tailwind CSS classes.
+- `underlineColor` (string): The color of the underline for active items. Use Tailwind CSS classes.
+- `hideOnScroll` (boolean): Whether to hide the navbar when scrolling down.
+- `currentpath` (string): The path.
+
 ## Features
 
-- Smooth animation using Framer Motion
+- Smooth animations using Framer Motion
 - Customizable appearance with Tailwind CSS classes
-- Optional spring effect for tooltip movement
 - Responsive design
+- Dropdown support for nested navigation items
+- Hide on scroll functionality for the navbar
 
 ## Contributing
 

@@ -1,13 +1,12 @@
 {
   "name": "mystojs",
-  "version": "1.0.5",
+  "version": "1.1.4",
   "description": "Nextjs friendly reusable components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "prepublishOnly": "npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc && terser ./dist/index.js -o ./dist/index.min.js -c -m && terser ./dist/Tooltip.js -o ./dist/Tooltip.min.js -c -m && terser ./dist/Navbar.js -o ./dist/Navbar.min.js -c -m",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -19,24 +18,27 @@
     "mystojs",
     "react",
     "tooltip",
+    "navbar",
     "component"
   ],
   "author": "Sai Charan",
   "license": "MIT",
   "peerDependencies": {
-    "framer-motion": "^11.5.6",
-    "react": "^18.3.1"
+    "framer-motion": "^11.0.0",
+    "react": "^18.0.0"
   },
   "bugs": {
     "url": "https://github.com/Saic1205/mystojs/issues"
   },
   "homepage": "https://github.com/Saic1205/mystojs#readme",
   "devDependencies": {
-    "@types/react": "^18.3.8",
-    "@types/react-dom": "^18.3.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "terser": "^5.33.0",
     "typescript": "^5.6.2"
   },
-  "dependencies": {
-    "framer-motion": "^11.5.6"
-  }
+  "files": [
+    "dist",
+    "README.md"
+  ]
 }

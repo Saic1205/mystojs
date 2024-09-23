@@ -1,2 +1,2 @@
 export { default as Tooltip } from './Tooltip';
-//# sourceMappingURL=index.d.ts.map
+export { default as Navbar } from './Navbar';
