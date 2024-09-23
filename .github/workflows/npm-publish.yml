@@ -1,7 +1,4 @@
-# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
-# For more information see: https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages
-
-name: Conditional Publish to npm
+name: Publish Package to npm
 
 on:
   push:
@@ -9,46 +6,50 @@ on:
       - main  # or your default branch name
 
 jobs:
-  check-version:
+  check-and-publish:
     runs-on: ubuntu-latest
-    outputs:
-      version_changed: ${{ steps.check.outputs.changed }}
-      new_version: ${{ steps.check.outputs.version }}
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 2
-      - name: Check if version has been updated
-        id: check
-        run: |
-          git diff HEAD^ HEAD -- package.json | grep '"version"' || echo "No version change"
-          if git diff HEAD^ HEAD -- package.json | grep '"version"'; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-            new_version=$(git diff HEAD^ HEAD -- package.json | grep '"version"' | cut -d'"' -f4)
-            echo "version=$new_version" >> $GITHUB_OUTPUT
-          else
-            echo "changed=false" >> $GITHUB_OUTPUT
-          fi
-
-  publish-npm:
-    needs: check-version
-    if: needs.check-version.outputs.version_changed == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: '16'
           registry-url: 'https://registry.npmjs.org'
-      - run: npm ci
-      - run: npm run build
-      - run: npm publish
+      
+      - name: Check if version has been updated
+        id: check
+        run: |
+          OLD_VERSION=$(git show HEAD^:package.json | grep '"version":' | cut -d '"' -f 4)
+          NEW_VERSION=$(grep '"version":' package.json | cut -d '"' -f 4)
+          if [ "$OLD_VERSION" != "$NEW_VERSION" ]; then
+            echo "Version changed from $OLD_VERSION to $NEW_VERSION"
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "Version unchanged"
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Install dependencies
+        if: steps.check.outputs.changed == 'true'
+        run: npm ci
+      
+      - name: Build
+        if: steps.check.outputs.changed == 'true'
+        run: npm run build
+      
+      - name: Publish to npm
+        if: steps.check.outputs.changed == 'true'
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      
       - name: Create Release
+        if: steps.check.outputs.changed == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create v${{ needs.check-version.outputs.new_version }} \
-            --title "Release ${{ needs.check-version.outputs.new_version }}" \
-            --notes "Version ${{ needs.check-version.outputs.new_version }} has been published to npm."
+          gh release create v${{ steps.check.outputs.version }} \
+            --title "Release ${{ steps.check.outputs.version }}" \
+            --notes "Version ${{ steps.check.outputs.version }} has been published to npm."
