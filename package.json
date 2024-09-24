@@ -1,6 +1,6 @@
 {
-  "name": "mystojs",
-  "version": "1.1.4",
+  "name": "@saic1205/mystojs",
+  "version": "1.1.9",
   "description": "Nextjs friendly reusable components",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -40,5 +40,10 @@
   "files": [
     "dist",
     "README.md"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/",
+    "@saic1205:registry": "https://npm.pkg.github.com"
+  }
 }

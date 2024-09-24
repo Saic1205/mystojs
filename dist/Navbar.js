@@ -132,7 +132,7 @@ var NavItem = function (_a) {
                 react_1.default.createElement(framer_motion_1.motion.svg, { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 20 20", fill: "currentColor", className: "w-5 h-5 ml-1", animate: { rotate: isOpen ? 180 : 0 }, transition: { duration: 0.2 } },
                     react_1.default.createElement("path", { fillRule: "evenodd", d: "M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z", clipRule: "evenodd" }))),
             react_1.default.createElement(framer_motion_1.AnimatePresence, null, isOpen && (react_1.default.createElement(framer_motion_1.motion.ul, { initial: { opacity: 0, y: -10 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -10 }, transition: { duration: 0.2 }, className: "absolute left-0 top-full w-auto rounded-b-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50" }, item.subItems.map(function (subItem) { return (react_1.default.createElement("li", { key: subItem.href },
-                react_1.default.createElement("a", { href: subItem.href, className: "block px-4 py-2 text-sm ".concat(hoverItemColor), onClick: function (e) {
+                react_1.default.createElement("a", { href: subItem.href, className: "block px-4 py-2 text-sm hover:bg-neutral-100 text-nowrap ".concat(hoverItemColor), onClick: function (e) {
                         e.stopPropagation();
                         toggleDropdown(item.href);
                         setActiveItem(subItem.href);

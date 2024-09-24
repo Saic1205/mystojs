@@ -71,7 +71,8 @@ A responsive navigation bar component with dropdown support and smooth animation
 ```jsx
 import React from "react";
 import { Navbar } from "mystojs";
-import import { usePathname } from "next/navigation"; // used in nextjs replace this react specific equivalent if using react
+import import { usePathname } from "next/navigation"; 
+//used in nextjs replace this react specific equivalent if using react
 
 const Mynav = () => {
     const pathname = usePathname();
