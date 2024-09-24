@@ -1,10 +1,8 @@
-name: Publish Package to npm
-
+name: Publish Package to npm and GitHub Packages
 on:
   push:
     branches:
       - main  # or your default branch name
-
 jobs:
   check-and-publish:
     runs-on: ubuntu-latest
@@ -45,6 +43,19 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
+      - name: Setup Node.js with GitHub Packages
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@ySaic1205'
+      
+      - name: Publish to GitHub Packages
+        if: steps.check.outputs.changed == 'true'
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.G_TOKEN }}
+      
       - name: Create Release
         if: steps.check.outputs.changed == 'true'
         env:
@@ -52,4 +63,4 @@ jobs:
         run: |
           gh release create v${{ steps.check.outputs.version }} \
             --title "Release ${{ steps.check.outputs.version }}" \
-            --notes "Version ${{ steps.check.outputs.version }} has been published to npm."
+            --notes "Version ${{ steps.check.outputs.version }} has been published to npm and GitHub Packages."
