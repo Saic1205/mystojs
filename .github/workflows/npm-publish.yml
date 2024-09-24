@@ -39,7 +39,8 @@ jobs:
       
       - name: Publish to npm
         if: steps.check.outputs.changed == 'true'
-        run: npm publish
+        run: |
+          npm publish || npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
@@ -48,11 +49,12 @@ jobs:
         with:
           node-version: '16'
           registry-url: 'https://npm.pkg.github.com'
-          scope: '@ySaic1205'
       
       - name: Publish to GitHub Packages
         if: steps.check.outputs.changed == 'true'
-        run: npm publish
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.G_TOKEN }}" >> .npmrc
+          npm publish || npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.G_TOKEN }}
       
