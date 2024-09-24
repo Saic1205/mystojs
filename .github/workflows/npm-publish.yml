@@ -48,7 +48,7 @@ jobs:
       - name: Create Release
         if: steps.check.outputs.changed == 'true'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.G_TOKEN }}
         run: |
           gh release create v${{ steps.check.outputs.version }} \
             --title "Release ${{ steps.check.outputs.version }}" \
