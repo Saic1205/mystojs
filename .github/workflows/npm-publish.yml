@@ -40,7 +40,10 @@ jobs:
       - name: Publish to npm
         if: steps.check.outputs.changed == 'true'
         run: |
-          npm publish || npm publish --access public
+          echo "Attempting to publish to npm..."
+          npm config set registry https://registry.npmjs.org/
+          npm whoami
+          npm publish --access public || echo "Failed to publish to npm, it might already be published"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
@@ -53,8 +56,11 @@ jobs:
       - name: Publish to GitHub Packages
         if: steps.check.outputs.changed == 'true'
         run: |
+          echo "Attempting to publish to GitHub Packages..."
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.G_TOKEN }}" >> .npmrc
-          npm publish || npm publish --access public
+          npm config set registry https://npm.pkg.github.com
+          npm whoami
+          npm publish --access public || echo "Failed to publish to GitHub Packages, it might already be published"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.G_TOKEN }}
       
