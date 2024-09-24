@@ -1,0 +1,66 @@
+name: Publish Package to npm and GitHub Packages
+on:
+  push:
+    branches:
+      - main  # or your default branch name
+jobs:
+  check-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          registry-url: 'https://registry.npmjs.org'
+      
+      - name: Check if version has been updated
+        id: check
+        run: |
+          OLD_VERSION=$(git show HEAD^:package.json | grep '"version":' | cut -d '"' -f 4)
+          NEW_VERSION=$(grep '"version":' package.json | cut -d '"' -f 4)
+          if [ "$OLD_VERSION" != "$NEW_VERSION" ]; then
+            echo "Version changed from $OLD_VERSION to $NEW_VERSION"
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "Version unchanged"
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Install dependencies
+        if: steps.check.outputs.changed == 'true'
+        run: npm ci
+      
+      - name: Build
+        if: steps.check.outputs.changed == 'true'
+        run: npm run build
+      
+      - name: Publish to npm
+        if: steps.check.outputs.changed == 'true'
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      
+      - name: Setup Node.js with GitHub Packages
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@ySaic1205'
+      
+      - name: Publish to GitHub Packages
+        if: steps.check.outputs.changed == 'true'
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.G_TOKEN }}
+      
+      - name: Create Release
+        if: steps.check.outputs.changed == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.G_TOKEN }}
+        run: |
+          gh release create v${{ steps.check.outputs.version }} \
+            --title "Release ${{ steps.check.outputs.version }}" \
+            --notes "Version ${{ steps.check.outputs.version }} has been published to npm and GitHub Packages."
